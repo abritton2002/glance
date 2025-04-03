@@ -1,0 +1,75 @@
+- name: Growing
+  columns:
+    - size: small
+      widgets:
+        - type: bookmarks
+          groups:
+            - title: Christian Resources
+              color: 220 70 50
+              links:
+                - title: Bible Gateway
+                  url: https://www.biblegateway.com/
+                - title: YouVersion
+                  url: https://www.bible.com/
+                - title: Desiring God
+                  url: https://www.desiringgod.org/
+                - title: Gospel Coalition
+                  url: https://www.thegospelcoalition.org/
+                - title: Ligonier
+                  url: https://www.ligonier.org/
+                - title: Got Questions
+                  url: https://www.gotquestions.org/
+
+    - size: full
+      widgets:
+        - type: group
+          title: Christian Content
+          widgets:
+            - type: reddit
+              title: Bible
+              subreddit: Bible
+              show-thumbnails: true
+              collapse-after: 6
+            - type: reddit
+              title: Christian Music
+              subreddit: ChristianMusic
+              show-thumbnails: true
+              collapse-after: 6
+        
+        - type: rss
+          title: Christian Blogs
+          style: horizontal-cards
+          limit: 10
+          collapse-after: 6
+          cache: 3h
+          feeds:
+            - url: https://www.desiringgod.org/feed
+              title: Desiring God
+            - url: https://www.thegospelcoalition.org/feed/
+              title: The Gospel Coalition
+            - url: https://www.ligonier.org/blog/feed/
+              title: Ligonier Ministries
+
+
+    - size: small
+      widgets:
+        - type: search
+          search-engine: google
+          placeholder: "Search Bible or resources..."
+          autofocus: false
+          new-tab: true
+          bangs:
+            - title: Bible Gateway
+              shortcut: "!bg"
+              url: https://www.biblegateway.com/passage/?search={QUERY}
+            - title: Got Questions
+              shortcut: "!gq"
+              url: https://www.gotquestions.org/search.php?zoom_sort=0&zoom_query={QUERY}
+        
+        - type: html
+          source: |
+            <div class="p-4 text-center">
+              <h4 class="color-primary mb-3">Verse of the Day</h4>
+              <p class="mb-4">"For I know the plans I have for you," declares the LORD, "plans to prosper you and not to harm you, plans to give you hope and a future."</p>
+              <p class="color-highlight">Jeremiah 29:11</p>
+            </div>

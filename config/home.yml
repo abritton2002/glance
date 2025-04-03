@@ -3,14 +3,12 @@
   columns:
     - size: small
       widgets:
-        - type: clock
-          hour-format: 12h
-          timezones:
-            - timezone: America/New_York
-              label: NYC
-            - timezone: America/Los_Angeles
-              label: LA
-
+        - type: html
+          source: |
+            <div style="padding: 20px; text-align: center;">
+              <h2 class="color-primary">Welcome, Alex!</h2>
+              <p>Here's your personal dashboard for the day.</p>
+            </div>
         - type: search
           search-engine: google
           placeholder: "Search the web..."
@@ -24,29 +22,22 @@
               shortcut: "!r"
               url: https://www.reddit.com/search?q={QUERY}
 
-        - type: group
-          title: Sports News
-          widgets:
-            - type: rss
-              title: Sports
-              limit: 10
-              collapse-after: 5
-              cache: 1h
-              feeds:
-                - url: https://steelersdepot.com/feed/
-                  title: Steelers Depot
-                - url: https://www.mlb.com/pirates/feeds/news/rss.xml
-                  title: Pittsburgh Pirates
-                - url: https://www.dukebasketballreport.com/rss/current.xml
-                  title: Duke Basketball
-            - type: reddit
-              subreddit: nfl
-              show-thumbnails: true
-              collapse-after: 5
-            - type: reddit
-              subreddit: nba
-              show-thumbnails: true
-              collapse-after: 5
+        - type: bookmarks
+          groups:
+            - title: Quick Links
+              links:
+                - title: Gmail
+                  url: https://mail.google.com/
+                  icon: si:gmail
+                - title: YouTube
+                  url: https://www.youtube.com/
+                  icon: si:youtube
+                - title: GitHub
+                  url: https://github.com/
+                  icon: si:github
+                - title: Reddit
+                  url: https://www.reddit.com/
+                  icon: si:reddit
 
         - type: weather
           location: Tampa
@@ -69,8 +60,8 @@
               show-thumbnails: true
               collapse-after: 6
             - type: reddit
-              title: Technology
-              subreddit: technology
+              title: Investing
+              subreddit: investing
               show-thumbnails: true
               collapse-after: 6
             - type: rss
@@ -94,50 +85,9 @@
             - UCq_VxLzTBVedOd1kOgAfztw # Channel 3
           collapse-after-rows: 2
 
-        - type: group
-          title: Financial Markets
-          widgets:
-            - type: reddit
-              title: Investing
-              subreddit: investing
-              show-thumbnails: true
-              collapse-after: 6
-            - type: reddit
-              title: Stock Market
-              subreddit: StockMarket
-              show-thumbnails: true
-              collapse-after: 6
 
     - size: small
       widgets:
-        - type: bookmarks
-          groups:
-            - title: Quick Links
-              links:
-                - title: Gmail
-                  url: https://mail.google.com/
-                  icon: si:gmail
-                - title: YouTube
-                  url: https://www.youtube.com/
-                  icon: si:youtube
-                - title: GitHub
-                  url: https://github.com/
-                  icon: si:github
-                - title: Reddit
-                  url: https://www.reddit.com/
-                  icon: si:reddit
-            - title: Finance
-              color: 110 70 50
-              links:
-                - title: Yahoo Finance
-                  url: https://finance.yahoo.com/
-                  icon: si:yahoo
-                - title: Trading View
-                  url: https://www.tradingview.com/
-                  icon: si:tradingview
-                - title: WSJ
-                  url: https://www.wsj.com/
-                  icon: si:wsj
 
         - type: markets
           title: Market Overview
@@ -158,7 +108,7 @@
         - type: rss
           title: Financial News
           limit: 8
-          collapse-after: 5
+          collapse-after: 3
           cache: 2h
           feeds:
             - url: https://feeds.a.dj.com/rss/RSSMarketsMain.xml

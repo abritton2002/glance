@@ -1,0 +1,80 @@
+- name: Sports
+  columns:
+    - size: small
+      widgets:
+        - type: group
+          title: League Subreddits
+          widgets:
+            - type: reddit
+              title: NFL
+              subreddit: nfl
+              show-thumbnails: true
+              collapse-after: 3
+            - type: reddit
+              title: NBA
+              subreddit: nba
+              show-thumbnails: true
+              collapse-after: 3
+            - type: reddit
+              title: MLB
+              subreddit: baseball
+              show-thumbnails: true
+              collapse-after: 3
+        
+
+    - size: full
+      widgets:
+        - type: group
+          title: Sports News
+          widgets:
+            - type: rss
+              title: Sports News
+              style: horizontal-cards
+              limit: 10
+              collapse-after: 6
+              cache: 1h
+              feeds:
+                - url: https://steelersdepot.com/feed/
+                  title: Steelers Depot
+                - url: https://www.mlb.com/pirates/feeds/news/rss.xml
+                  title: Pittsburgh Pirates
+                - url: https://www.dukebasketballreport.com/rss/current.xml
+                  title: Duke Basketball
+            
+            - type: rss
+              title: ESPN
+              style: horizontal-cards
+              limit: 10
+              collapse-after: 6
+              cache: 1h
+              feeds:
+                - url: https://www.espn.com/espn/rss/news
+                  title: ESPN News
+                - url: https://www.espn.com/espn/rss/nfl/news
+                  title: NFL News
+                - url: https://www.espn.com/espn/rss/nba/news
+                  title: NBA News
+                - url: https://www.espn.com/espn/rss/mlb/news
+                  title: MLB News
+        - type: reddit
+          title: r/sports
+          subreddit: sports
+          show-thumbnails: true
+          collapse-after: 5
+
+    - size: small
+      widgets:
+        - type: bookmarks
+          groups:
+            - title: Sports Sites
+              links:
+                - title: ESPN
+                  url: https://www.espn.com/
+                  icon: si:espn
+                - title: Bleacher Report
+                  url: https://bleacherreport.com/
+                - title: CBS Sports
+                  url: https://www.cbssports.com/
+                - title: The Athletic
+                  url: https://theathletic.com/
+

@@ -2,11 +2,26 @@ server:
   assets-path: /app/assets
 
 theme:
-  # Note: assets are cached by the browser, changes to the CSS file
-  # will not be reflected until the browser cache is cleared (Ctrl+F5)
-  custom-css-file: /assets/user.css?v=1712211345
+  light: true                # This creates a light theme (white background)
+  background-color: 210 15 97  # Very light blue-white
+  primary-color: 210 80 50     # Medium blue 
+  positive-color: 140 60 50    # Green for positive indicators
+  negative-color: 0 70 60      # Red for negative indicators
+  contrast-multiplier: 1.1     # Slightly increase text contrast
+
+branding:
+  logo-text: myDash
+  # If you want to use a custom image instead of text:
+  logo-url: /assets/mydash-logo-2.png
+  favicon-url: /assets/mydash-logo-2.png
+  custom-footer: |
+    <p>myDash - Personal Dashboard</p>
+    
 
 pages:
   # It's not necessary to create a new file for each page and include it, you can simply
   # put its contents here, though multiple pages are easier to manage when separated
   !include: home.yml
+  !include: learning.yml
+  !include: growing.yml
+  !include: sports.yml

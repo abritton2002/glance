@@ -1,0 +1,75 @@
+/* Clean Dark Theme for Glance Dashboard */
+
+/* Main background color */
+body {
+    background-color: #1a1a1a; /* Dark gray background */
+  }
+  
+  /* Widget backgrounds */
+  .widget {
+    background-color: #252525; /* Slightly lighter gray for widgets */
+    border-radius: 12px;
+    border: 1px solid #333333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Widget titles */
+  .widget-title {
+    color: #5c8bff; /* Soft blue accent for titles */
+    font-weight: bold;
+  }
+  
+  /* Text colors */
+  .widget-content {
+    color: #e0e0e0; /* Light text for better contrast */
+  }
+  
+  /* Links */
+  a {
+    color: #5c8bff; /* Consistent blue for links */
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+    color: #ff7070; /* Soft red on hover */
+  }
+  
+  /* Weather widget customization */
+  .weather-widget .current-temp {
+    color: #5c8bff; /* Consistent blue for temperature */
+    font-size: 1.5em;
+  }
+  
+  .weather-widget .forecast-item {
+    background-color: rgba(50, 50, 50, 0.5); /* Semi-transparent background */
+    border-radius: 5px;
+    margin: 5px 0;
+  }
+  
+  /* Markets widget customization */
+  .market-item-change-positive {
+    color: #4ade80; /* Muted green for positive change */
+  }
+  
+  .market-item-change-negative {
+    color: #ff7070; /* Muted red for negative change */
+  }
+  
+  /* Reddit and RSS customization */
+  .reddit-post-title, .rss-item-title {
+    font-weight: bold;
+    color: #e0e0e0;
+  }
+  
+  .reddit-post-metadata, .rss-item-metadata {
+    color: #999999; /* Medium gray for metadata */
+    font-size: 0.8em;
+  }
+  
+  /* Add a subtle hover effect to list items */
+  .list-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    transform: translateX(2px);
+    transition: all 0.2s ease;
+  }

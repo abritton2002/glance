@@ -4,85 +4,82 @@
   columns:
     - size: small
       widgets:
-        - type: calendar
-          first-day-of-week: monday
-
         - type: rss
           limit: 10
           collapse-after: 3
           cache: 12h
           feeds:
-            - url: https://selfh.st/rss/
-              title: selfh.st
-            - url: https://ciechanow.ski/atom.xml
-            - url: https://www.joshwcomeau.com/rss.xml
-              title: Josh Comeau
-            - url: https://samwho.dev/rss.xml
-            - url: https://ishadeed.com/feed.xml
-              title: Ahmad Shadeed
+            - url: https://steelersdepot.com/feed/
+              title: Steelers Depot (News)
+            - url: https://www.mlb.com/pirates/feeds/news/rss.xml
+              title: Pittsburgh Pirates News
+            - url: https://www.dukebasketballreport.com/rss/current.xml
+              title: Duke Basketball Report
+            - url: https://www.theverge.com/rss/index.xml
+              title: The Verge (Tech)
+            - url: https://feeds.a.dj.com/rss/RSSMarketsMain.xml
+              title: WSJ Markets
+            - url: https://blog.google/technology/ai/rss/
+              title: Google AI Blog
+            - url: https://desiring-god.herokuapp.com/rss
+              title: Desiring God
 
-        - type: twitch-channels
-          channels:
-            - theprimeagen
-            - j_blow
-            - piratesoftware
-            - cohhcarnage
-            - christitustech
-            - EJ_SA
+        - type: weather
+          location: Tampa
+          units: imperial 
+          hour-format: 12h
 
     - size: full
       widgets:
         - type: group
           widgets:
-            - type: hacker-news
-            - type: lobsters
+            - type: reddit
+              subreddit: worldnews
+              show-thumbnails: true
+            - type: reddit
+              subreddit: todayilearned
+              show-thumbnails: true
 
         - type: videos
           channels:
-            - UCXuqSBlHAE6Xw-yeJA0Tunw # Linus Tech Tips
-            - UCR-DXc1voovS8nhAvccRZhg # Jeff Geerling
-            - UCsBjURrPoezykLs9EqgamOA # Fireship
-            - UCBJycsmduvYEL83R_U4JriQ # Marques Brownlee
-            - UCHnyfMqiRRG1u-2MsSQLbXA # Veritasium
+            - UC9RM-iSvTu1uPJb8X5yp3EQ # Philip Anthony Mitchell
+            - UC2C_jShtL725hvbm1arSV9w # CGP Grey
+            - UC0QHWhjbe5fGJEPz3sVb6nw # PBS Space Time
+            - UCSHZKyawb77ixDdsGog4iWA # Lex Fridman
+            - UC9-y-6csu5WGm29I7JiwpnA # Computerphile
+            - UCxsQFG_8Dbt1W89vhUiXbXA # Practical Engineering
 
         - type: group
           widgets:
             - type: reddit
+              subreddit: artificial
+              show-thumbnails: true
+            - type: reddit
+              subreddit: MachineLearning
+              show-thumbnails: true
+            - type: reddit
               subreddit: technology
               show-thumbnails: true
             - type: reddit
-              subreddit: selfhosted
+              subreddit: investing
+              show-thumbnails: true
+            - type: reddit
+              subreddit: StockMarket
               show-thumbnails: true
 
     - size: small
       widgets:
-        - type: weather
-          location: London, United Kingdom
-          units: metric # alternatively "imperial"
-          hour-format: 12h # alternatively "24h"
-          # Optionally hide the location from being displayed in the widget
-          # hide-location: true
-
         - type: markets
           markets:
             - symbol: SPY
               name: S&P 500
             - symbol: BTC-USD
               name: Bitcoin
-            - symbol: NVDA
-              name: NVIDIA
-            - symbol: AAPL
-              name: Apple
-            - symbol: MSFT
-              name: Microsoft
-
-        - type: releases
-          cache: 1d
-          # Without authentication the Github API allows for up to 60 requests per hour. You can create a
-          # read-only token from your Github account settings and use it here to increase the limit.
-          # token: ...
-          repositories:
-            - glanceapp/glance
-            - go-gitea/gitea
-            - immich-app/immich
-            - syncthing/syncthing
+            - symbol: XRP-USD
+              name: Ripple
+            - symbol: SOL-USD
+              name: Solana
+            - symbol: TSLA
+              name: Tesla
+            - symbol: GDXU
+              name: GDXU

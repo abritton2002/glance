@@ -1,75 +1,146 @@
 - name: Home
-  # Optionally, if you only have a single page you can hide the desktop navigation for a cleaner look
   # hide-desktop-navigation: true
   columns:
     - size: small
       widgets:
-        - type: rss
-          limit: 10
-          collapse-after: 3
-          cache: 12h
-          feeds:
-            - url: https://steelersdepot.com/feed/
-              title: Steelers Depot (News)
-            - url: https://www.mlb.com/pirates/feeds/news/rss.xml
-              title: Pittsburgh Pirates News
-            - url: https://www.dukebasketballreport.com/rss/current.xml
-              title: Duke Basketball Report
-            - url: https://www.theverge.com/rss/index.xml
-              title: The Verge (Tech)
-            - url: https://feeds.a.dj.com/rss/RSSMarketsMain.xml
-              title: WSJ Markets
-            - url: https://blog.google/technology/ai/rss/
-              title: Google AI Blog
-            - url: https://desiring-god.herokuapp.com/rss
-              title: Desiring God
+        - type: clock
+          hour-format: 12h
+          timezones:
+            - timezone: America/New_York
+              label: NYC
+            - timezone: America/Los_Angeles
+              label: LA
+
+        - type: search
+          search-engine: google
+          placeholder: "Search the web..."
+          autofocus: false
+          new-tab: true
+          bangs:
+            - title: YouTube
+              shortcut: "!yt"
+              url: https://www.youtube.com/results?search_query={QUERY}
+            - title: Reddit
+              shortcut: "!r"
+              url: https://www.reddit.com/search?q={QUERY}
+
+        - type: group
+          title: Sports News
+          widgets:
+            - type: rss
+              title: Sports
+              limit: 10
+              collapse-after: 5
+              cache: 1h
+              feeds:
+                - url: https://steelersdepot.com/feed/
+                  title: Steelers Depot
+                - url: https://www.mlb.com/pirates/feeds/news/rss.xml
+                  title: Pittsburgh Pirates
+                - url: https://www.dukebasketballreport.com/rss/current.xml
+                  title: Duke Basketball
+            - type: reddit
+              subreddit: nfl
+              show-thumbnails: true
+              collapse-after: 5
+            - type: reddit
+              subreddit: nba
+              show-thumbnails: true
+              collapse-after: 5
 
         - type: weather
           location: Tampa
-          units: imperial 
+          units: imperial
           hour-format: 12h
 
     - size: full
       widgets:
         - type: group
+          title: AI & Technology
           widgets:
             - type: reddit
-              subreddit: worldnews
-              show-thumbnails: true
-            - type: reddit
-              subreddit: todayilearned
-              show-thumbnails: true
-
-        - type: videos
-          channels:
-            - UC9RM-iSvTu1uPJb8X5yp3EQ # Philip Anthony Mitchell
-            - UC2C_jShtL725hvbm1arSV9w # CGP Grey
-            - UC0QHWhjbe5fGJEPz3sVb6nw # PBS Space Time
-            - UCSHZKyawb77ixDdsGog4iWA # Lex Fridman
-            - UC9-y-6csu5WGm29I7JiwpnA # Computerphile
-            - UCxsQFG_8Dbt1W89vhUiXbXA # Practical Engineering
-
-        - type: group
-          widgets:
-            - type: reddit
+              title: Artificial Intelligence
               subreddit: artificial
               show-thumbnails: true
+              collapse-after: 6
             - type: reddit
+              title: Machine Learning
               subreddit: MachineLearning
               show-thumbnails: true
+              collapse-after: 6
             - type: reddit
+              title: Technology
               subreddit: technology
               show-thumbnails: true
+              collapse-after: 6
+            - type: rss
+              title: Tech News
+              style: horizontal-cards
+              limit: 8
+              collapse-after: 4
+              cache: 3h
+              feeds:
+                - url: https://www.theverge.com/rss/index.xml
+                  title: The Verge
+                - url: https://blog.google/technology/ai/rss/
+                  title: Google AI Blog
+
+        - type: videos
+          title: Video Content
+          style: grid-cards
+          channels:
+            - UC6L_LBqoKZXFa4WxHox5iCw # Channel 1
+            - UCrPGIKiPtgQ25TaW1fLdR0Q # Channel 2
+            - UCq_VxLzTBVedOd1kOgAfztw # Channel 3
+          collapse-after-rows: 2
+
+        - type: group
+          title: Financial Markets
+          widgets:
             - type: reddit
+              title: Investing
               subreddit: investing
               show-thumbnails: true
+              collapse-after: 6
             - type: reddit
+              title: Stock Market
               subreddit: StockMarket
               show-thumbnails: true
+              collapse-after: 6
 
     - size: small
       widgets:
+        - type: bookmarks
+          groups:
+            - title: Quick Links
+              links:
+                - title: Gmail
+                  url: https://mail.google.com/
+                  icon: si:gmail
+                - title: YouTube
+                  url: https://www.youtube.com/
+                  icon: si:youtube
+                - title: GitHub
+                  url: https://github.com/
+                  icon: si:github
+                - title: Reddit
+                  url: https://www.reddit.com/
+                  icon: si:reddit
+            - title: Finance
+              color: 110 70 50
+              links:
+                - title: Yahoo Finance
+                  url: https://finance.yahoo.com/
+                  icon: si:yahoo
+                - title: Trading View
+                  url: https://www.tradingview.com/
+                  icon: si:tradingview
+                - title: WSJ
+                  url: https://www.wsj.com/
+                  icon: si:wsj
+
         - type: markets
+          title: Market Overview
           markets:
             - symbol: SPY
               name: S&P 500
@@ -83,3 +154,14 @@
               name: Tesla
             - symbol: GDXU
               name: GDXU
+
+        - type: rss
+          title: Financial News
+          limit: 8
+          collapse-after: 5
+          cache: 2h
+          feeds:
+            - url: https://feeds.a.dj.com/rss/RSSMarketsMain.xml
+              title: WSJ Markets
+            - url: https://www.cnbc.com/id/20910258/device/rss/rss.html
+              title: CNBC Finance

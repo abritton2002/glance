@@ -25,6 +25,7 @@
         - type: bookmarks
           groups:
             - title: Quick Links
+            
               links:
                 - title: Gmail
                   url: https://mail.google.com/
@@ -38,11 +39,19 @@
                 - title: Reddit
                   url: https://www.reddit.com/
                   icon: si:reddit
+                - title: Yahoo Finance
+                  url: https://finance.yahoo.com/
+                  icon: si:yahoo
 
-        - type: weather
-          location: Tampa
-          units: imperial
-          hour-format: 12h
+        - type: rss
+          title: Christian Blogs
+          style: vertical-cards
+          limit: 5
+          collapse-after: 2
+          cache: 3h
+          feeds:
+            - url: https://www.thegospelcoalition.org/feed/
+              title: The Gospel Coalition
 
     - size: full
       widgets:
@@ -55,18 +64,13 @@
               show-thumbnails: true
               collapse-after: 6
             - type: reddit
-              title: Machine Learning
-              subreddit: MachineLearning
-              show-thumbnails: true
-              collapse-after: 6
-            - type: reddit
               title: Investing
               subreddit: investing
               show-thumbnails: true
               collapse-after: 6
             - type: rss
               title: Tech News
-              style: horizontal-cards
+              style: vertical-list
               limit: 8
               collapse-after: 4
               cache: 3h
@@ -75,6 +79,25 @@
                   title: The Verge
                 - url: https://blog.google/technology/ai/rss/
                   title: Google AI Blog
+            - type: rss
+              title: Sports News
+              style: vertical-list
+              limit: 10
+              collapse-after: 6
+              cache: 1h
+              feeds:
+                - url: https://steelersdepot.com/feed/
+                  title: Steelers Depot
+                - url: https://www.mlb.com/pirates/feeds/news/rss.xml
+                  title: Pittsburgh Pirates
+                - url: https://www.dukebasketballreport.com/rss/current.xml
+                  title: Duke Basketball
+            - type: reddit
+              title: Bible
+              subreddit: Bible
+              show-thumbnails: true
+              collapse-after: 6
+
 
         - type: videos
           title: Video Content
@@ -83,7 +106,7 @@
             - UC6L_LBqoKZXFa4WxHox5iCw # Channel 1
             - UCrPGIKiPtgQ25TaW1fLdR0Q # Channel 2
             - UCq_VxLzTBVedOd1kOgAfztw # Channel 3
-          collapse-after-rows: 2
+          collapse-after-rows: 1
 
 
     - size: small
@@ -107,8 +130,8 @@
 
         - type: rss
           title: Financial News
-          limit: 8
-          collapse-after: 3
+          limit: 5
+          collapse-after: 2
           cache: 2h
           feeds:
             - url: https://feeds.a.dj.com/rss/RSSMarketsMain.xml

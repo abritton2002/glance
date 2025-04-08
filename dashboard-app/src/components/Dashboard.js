@@ -1,21 +1,34 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import RedditWidget from './RedditWidget';
+import WidgetConfig from './WidgetConfig';
 
 const Dashboard = () => {
   const [widgets, setWidgets] = useState([]);
+  const [showConfig, setShowConfig] = useState(false);
   const { logout } = useAuth();
 
-  const addWidget = (type) => {
+  const addWidget = (config) => {
     const newWidget = {
       id: Date.now(),
-      type,
-      title: type === 'reddit' ? 'Programming Updates' : 'New Widget'
+      type: config.type,
+      config: config.config
     };
     setWidgets([...widgets, newWidget]);
+    setShowConfig(false);
   };
 
   const removeWidget = (id) => {
     setWidgets(widgets.filter(widget => widget.id !== id));
+  };
+
+  const renderWidget = (widget) => {
+    switch (widget.type) {
+      case 'reddit':
+        return <RedditWidget subreddit={widget.config.subreddit} />;
+      default:
+        return <div>Unknown widget type</div>;
+    }
   };
 
   return (
@@ -27,6 +40,12 @@ const Dashboard = () => {
               <h1 className="text-xl font-bold text-gray-900">Glance Dashboard</h1>
             </div>
             <div className="flex items-center">
+              <button
+                onClick={() => setShowConfig(true)}
+                className="mr-4 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+              >
+                Add Widget
+              </button>
               <button
                 onClick={logout}
                 className="ml-4 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
@@ -40,15 +59,6 @@ const Dashboard = () => {
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-4 sm:px-0">
-          <div className="mb-6">
-            <button
-              onClick={() => addWidget('reddit')}
-              className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
-            >
-              Add Reddit Widget
-            </button>
-          </div>
-
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {widgets.map(widget => (
               <div
@@ -58,7 +68,7 @@ const Dashboard = () => {
                 <div className="p-5">
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="text-lg font-medium text-gray-900">
-                      {widget.title}
+                      {widget.type.charAt(0).toUpperCase() + widget.type.slice(1)} Widget
                     </h3>
                     <button
                       onClick={() => removeWidget(widget.id)}
@@ -67,9 +77,7 @@ const Dashboard = () => {
                       Remove
                     </button>
                   </div>
-                  <div className="h-32 flex items-center justify-center text-gray-500">
-                    Widget Content Coming Soon
-                  </div>
+                  {renderWidget(widget)}
                 </div>
               </div>
             ))}
@@ -82,6 +90,13 @@ const Dashboard = () => {
           )}
         </div>
       </main>
+
+      {showConfig && (
+        <WidgetConfig
+          onSave={addWidget}
+          onCancel={() => setShowConfig(false)}
+        />
+      )}
     </div>
   );
 };

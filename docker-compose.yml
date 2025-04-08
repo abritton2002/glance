@@ -1,13 +1,39 @@
+version: '3.8'
+
 services:
-  glance:
-    container_name: glance
-    image: glanceapp/glance
-    volumes:
-      - ./config:/app/config
-      - ./assets:/app/assets
-      # Optionally, also mount docker socket if you want to use the docker containers widget
-      # - /var/run/docker.sock:/var/run/docker.sock:ro
+  backend:
+    build: ./backend
     ports:
-      - 8080:8080
-    env_file: .env
-    restart: "no"
+      - "5001:5001"
+    environment:
+      - NODE_ENV=development
+      - PORT=5001
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: npm run dev
+
+  frontend:
+    build: ./dashboard-app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_API_URL=http://localhost:5001
+    volumes:
+      - ./dashboard-app:/app
+      - /app/node_modules
+    command: npm start
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:

@@ -3,15 +3,16 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-// Check for required environment variables
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
-  console.error('Missing Supabase environment variables. Please check your .env file.');
-  process.exit(1);
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_ANON_KEY;
+
+console.log('Supabase URL:', supabaseUrl);
+console.log('Supabase Key:', supabaseKey ? 'Present' : 'Missing');
+
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error('Missing Supabase credentials');
 }
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
-);
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 module.exports = supabase;

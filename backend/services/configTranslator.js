@@ -2,7 +2,7 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 const path = require('path');
 
-class ConfigTranslator {
+const configTranslator = {
   // Convert a user-friendly dashboard config to Glance YAML
   dashboardToYaml(dashboard) {
     const config = {
@@ -21,7 +21,7 @@ class ConfigTranslator {
     };
     
     return yaml.dump(config);
-  }
+  },
   
   // Format pages configuration
   _formatPages(pages) {
@@ -29,7 +29,7 @@ class ConfigTranslator {
       name: page.name,
       columns: this._formatColumns(page.columns),
     }));
-  }
+  },
   
   // Format columns configuration
   _formatColumns(columns) {
@@ -37,7 +37,7 @@ class ConfigTranslator {
       size: column.size,
       widgets: this._formatWidgets(column.widgets),
     }));
-  }
+  },
   
   // Format widgets configuration
   _formatWidgets(widgets) {
@@ -48,7 +48,7 @@ class ConfigTranslator {
       // Transform widget configuration
       return transformer(widget);
     });
-  }
+  },
   
   // Get transformer function for specific widget type
   _getWidgetTransformer(widgetType) {
@@ -68,7 +68,7 @@ class ConfigTranslator {
     };
     
     return transformers[widgetType] || transformers.default;
-  }
+  },
   
   // Widget transformer implementations
   _transformRedditWidget(widget) {
@@ -86,7 +86,7 @@ class ConfigTranslator {
       style: widget.config.style || 'vertical-list',
       collapse_after: widget.config.collapseAfter || 5,
     };
-  }
+  },
   
   // Transform RSS widget from user-friendly to Glance format
   _transformRssWidget(widget) {
@@ -101,7 +101,7 @@ class ConfigTranslator {
       limit: widget.config.limit || 10,
       collapse_after: widget.config.collapseAfter || 5,
     };
-  }
+  },
   
   // Other widget transformers...
   _transformWeatherWidget(widget) {
@@ -110,7 +110,7 @@ class ConfigTranslator {
       location: widget.config.location,
       units: widget.config.units || 'metric',
     };
-  }
+  },
   
   _transformSearchWidget(widget) {
     return {
@@ -118,7 +118,7 @@ class ConfigTranslator {
       search_engine: widget.config.searchEngine || 'google',
       placeholder: widget.config.placeholder || 'Search the web...',
     };
-  }
+  },
   
   _transformBookmarksWidget(widget) {
     return {
@@ -132,38 +132,45 @@ class ConfigTranslator {
         })),
       })),
     };
-  }
+  },
   
-// Generate YAML file for a specific user dashboard
-async generateYamlFile(dashboard, userId) {
-    const config = this.dashboardToYaml(dashboard);
-    
-    // Use a more reliable path for configurations
-    const configDir = path.resolve(process.env.CONFIG_PATH || './config', userId.toString());
-    console.log(`Generating config file in: ${configDir}`);
-    
-    // Create config directory if it doesn't exist
+  // Generate YAML file for a specific user dashboard
+  generateYamlFile: async (dashboard, userId) => {
     try {
+      const config = {
+        dashboard: {
+          id: dashboard.id,
+          name: dashboard.name,
+          user_id: userId,
+          widgets: dashboard.layout || []
+        }
+      };
+
+      const configDir = path.join(__dirname, '../../config');
       if (!fs.existsSync(configDir)) {
-        console.log(`Creating directory: ${configDir}`);
         fs.mkdirSync(configDir, { recursive: true });
       }
-    } catch (error) {
-      console.error(`Error creating directory: ${error.message}`);
-      throw error;
+
+      const configPath = path.join(configDir, `dashboard_${dashboard.id}.yaml`);
+      const yamlContent = yaml.dump(config);
+
+      fs.writeFileSync(configPath, yamlContent);
+      return configPath;
+    } catch (err) {
+      console.error('Error generating YAML file:', err);
+      throw err;
     }
-    
-    const filePath = path.join(configDir, `${dashboard.id}.yml`);
-    console.log(`Writing config to: ${filePath}`);
-    
+  },
+
+  parseYamlFile: async (configPath) => {
     try {
-      fs.writeFileSync(filePath, config);
-      console.log(`Config file written successfully`);
-      return filePath;
-    } catch (error) {
-      console.error(`Error writing config file: ${error.message}`);
-      throw error;
+      const fileContent = fs.readFileSync(configPath, 'utf8');
+      return yaml.load(fileContent);
+    } catch (err) {
+      console.error('Error parsing YAML file:', err);
+      throw err;
     }
-   }
-}
-module.exports = new ConfigTranslator();
+  }
+};
+
+module.exports = configTranslator;

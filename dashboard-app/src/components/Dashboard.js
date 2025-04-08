@@ -1,31 +1,84 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import RedditWidget from './RedditWidget';
+import WeatherWidget from './WeatherWidget';
+import RSSWidget from './RSSWidget';
+import CalendarWidget from './CalendarWidget';
+import ClockWidget from './ClockWidget';
+import TodoWidget from './TodoWidget';
 import WidgetConfig from './WidgetConfig';
+import axios from 'axios';
 
 const Dashboard = () => {
   const [widgets, setWidgets] = useState([]);
   const [showConfig, setShowConfig] = useState(false);
-  const { logout } = useAuth();
+  const { user } = useAuth();
+  const [dashboardId, setDashboardId] = useState(null);
 
-  const addWidget = (config) => {
-    const newWidget = {
-      id: Date.now(),
-      type: config.type,
-      config: config.config
+  useEffect(() => {
+    // First, get or create default dashboard
+    const initializeDashboard = async () => {
+      try {
+        const response = await axios.get('/api/dashboards/default');
+        setDashboardId(response.data.id);
+        return response.data.id;
+      } catch (err) {
+        console.error('Failed to get default dashboard:', err);
+      }
     };
-    setWidgets([...widgets, newWidget]);
-    setShowConfig(false);
+
+    // Then load widgets for that dashboard
+    const loadWidgets = async (id) => {
+      try {
+        const response = await axios.get(`/api/widgets/${id}/widgets`);
+        setWidgets(response.data);
+      } catch (err) {
+        console.error('Failed to load widgets:', err);
+      }
+    };
+
+    if (user) {
+      initializeDashboard().then(id => {
+        if (id) loadWidgets(id);
+      });
+    }
+  }, [user]);
+
+  const addWidget = async (config) => {
+    if (!dashboardId) return;
+    try {
+      const response = await axios.post(`/api/widgets/${dashboardId}/widgets`, config);
+      setWidgets([...widgets, response.data]);
+      setShowConfig(false);
+    } catch (err) {
+      console.error('Failed to add widget:', err);
+    }
   };
 
-  const removeWidget = (id) => {
-    setWidgets(widgets.filter(widget => widget.id !== id));
+  const removeWidget = async (id) => {
+    if (!dashboardId) return;
+    try {
+      await axios.delete(`/api/widgets/${dashboardId}/widgets/${id}`);
+      setWidgets(widgets.filter(widget => widget.id !== id));
+    } catch (err) {
+      console.error('Failed to remove widget:', err);
+    }
   };
 
   const renderWidget = (widget) => {
     switch (widget.type) {
       case 'reddit':
         return <RedditWidget subreddit={widget.config.subreddit} />;
+      case 'weather':
+        return <WeatherWidget location={widget.config.location} units={widget.config.units} />;
+      case 'rss':
+        return <RSSWidget feedUrl={widget.config.feedUrl} maxItems={widget.config.maxItems} />;
+      case 'calendar':
+        return <CalendarWidget maxEvents={widget.config.maxEvents} />;
+      case 'clock':
+        return <ClockWidget timezone={widget.config.timezone} showDate={widget.config.showDate} />;
+      case 'todo':
+        return <TodoWidget />;
       default:
         return <div>Unknown widget type</div>;
     }
@@ -46,12 +99,6 @@ const Dashboard = () => {
               >
                 Add Widget
               </button>
-              <button
-                onClick={logout}
-                className="ml-4 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
-              >
-                Logout
-              </button>
             </div>
           </div>
         </div>
@@ -65,37 +112,31 @@ const Dashboard = () => {
                 key={widget.id}
                 className="bg-white overflow-hidden shadow rounded-lg"
               >
-                <div className="p-5">
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-medium text-gray-900">
-                      {widget.type.charAt(0).toUpperCase() + widget.type.slice(1)} Widget
-                    </h3>
-                    <button
-                      onClick={() => removeWidget(widget.id)}
-                      className="text-red-600 hover:text-red-800"
-                    >
-                      Remove
-                    </button>
-                  </div>
+                <div className="p-4">
                   {renderWidget(widget)}
+                  <button
+                    onClick={() => removeWidget(widget.id)}
+                    className="mt-2 text-sm text-red-600 hover:text-red-800"
+                  >
+                    Remove
+                  </button>
                 </div>
               </div>
             ))}
           </div>
-
-          {widgets.length === 0 && (
-            <div className="text-center text-gray-500 mt-8">
-              Add widgets to customize your dashboard
-            </div>
-          )}
         </div>
       </main>
 
       {showConfig && (
-        <WidgetConfig
-          onSave={addWidget}
-          onCancel={() => setShowConfig(false)}
-        />
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <h2 className="text-lg font-medium mb-4">Add New Widget</h2>
+            <WidgetConfig
+              onSave={addWidget}
+              onCancel={() => setShowConfig(false)}
+            />
+          </div>
+        </div>
       )}
     </div>
   );

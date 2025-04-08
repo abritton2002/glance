@@ -5,6 +5,49 @@ const configTranslator = require('../services/configTranslator');
 const containerService = require('../services/containerService');
 const router = express.Router();
 
+// Get default dashboard (create if doesn't exist)
+router.get('/default', async (req, res) => {
+  try {
+    // First try to find an existing default dashboard
+    let { data: dashboards, error } = await supabase
+      .from('dashboards')
+      .select('*')
+      .eq('is_default', true)
+      .limit(1);
+
+    if (error) throw error;
+
+    // If no default dashboard exists, create one
+    if (!dashboards || dashboards.length === 0) {
+      const { data: newDashboard, error: createError } = await supabase
+        .from('dashboards')
+        .insert([
+          {
+            name: 'Default Dashboard',
+            is_default: true,
+            layout: {
+              pages: [
+                {
+                  name: 'Home',
+                  columns: []
+                }
+              ]
+            }
+          }
+        ])
+        .select();
+
+      if (createError) throw createError;
+      res.json(newDashboard[0]);
+    } else {
+      res.json(dashboards[0]);
+    }
+  } catch (error) {
+    console.error('Error getting default dashboard:', error);
+    res.status(500).json({ error: 'Failed to get default dashboard' });
+  }
+});
+
 // Get all dashboards for a user
 router.get('/', auth, async (req, res) => {
   try {

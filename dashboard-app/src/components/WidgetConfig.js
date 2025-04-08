@@ -1,94 +1,226 @@
 import React, { useState } from 'react';
 
-const widgetTypes = {
-  reddit: {
-    name: 'Reddit Feed',
-    fields: [
-      {
-        name: 'subreddit',
-        label: 'Subreddit',
-        type: 'text',
-        placeholder: 'e.g. programming',
-        default: 'programming'
-      }
-    ]
-  }
-};
-
 const WidgetConfig = ({ onSave, onCancel }) => {
-  const [widgetType, setWidgetType] = useState('reddit');
-  const [subreddit, setSubreddit] = useState('programming');
+  const [type, setType] = useState('');
+  const [config, setConfig] = useState({});
+
+  const handleTypeChange = (e) => {
+    const newType = e.target.value;
+    setType(newType);
+    // Reset config when type changes
+    setConfig({});
+  };
+
+  const handleConfigChange = (e) => {
+    const { name, value } = e.target;
+    setConfig(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    let config;
-    
-    switch (widgetType) {
-      case 'reddit':
-        config = { subreddit };
-        break;
-      default:
-        config = {};
-    }
+    onSave({ type, config });
+  };
 
-    onSave({
-      type: widgetType,
-      config
-    });
+  const renderConfigFields = () => {
+    switch (type) {
+      case 'reddit':
+        return (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Subreddit
+              </label>
+              <input
+                type="text"
+                name="subreddit"
+                value={config.subreddit || ''}
+                onChange={handleConfigChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                placeholder="e.g., news"
+              />
+            </div>
+          </div>
+        );
+
+      case 'weather':
+        return (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Location
+              </label>
+              <input
+                type="text"
+                name="location"
+                value={config.location || ''}
+                onChange={handleConfigChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                placeholder="e.g., London, UK"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Units
+              </label>
+              <select
+                name="units"
+                value={config.units || 'metric'}
+                onChange={handleConfigChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              >
+                <option value="metric">Metric (°C)</option>
+                <option value="imperial">Imperial (°F)</option>
+              </select>
+            </div>
+          </div>
+        );
+
+      case 'rss':
+        return (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Feed URL
+              </label>
+              <input
+                type="url"
+                name="feedUrl"
+                value={config.feedUrl || ''}
+                onChange={handleConfigChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                placeholder="https://example.com/feed.xml"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Maximum Items
+              </label>
+              <input
+                type="number"
+                name="maxItems"
+                value={config.maxItems || 5}
+                onChange={handleConfigChange}
+                min="1"
+                max="20"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              />
+            </div>
+          </div>
+        );
+
+      case 'calendar':
+        return (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Maximum Events
+              </label>
+              <input
+                type="number"
+                name="maxEvents"
+                value={config.maxEvents || 5}
+                onChange={handleConfigChange}
+                min="1"
+                max="20"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              />
+            </div>
+          </div>
+        );
+
+      case 'clock':
+        return (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Timezone
+              </label>
+              <input
+                type="text"
+                name="timezone"
+                value={config.timezone || 'local'}
+                onChange={handleConfigChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                placeholder="e.g., America/New_York"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Show Date
+              </label>
+              <select
+                name="showDate"
+                value={config.showDate !== undefined ? config.showDate : true}
+                onChange={handleConfigChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              >
+                <option value={true}>Yes</option>
+                <option value={false}>No</option>
+              </select>
+            </div>
+          </div>
+        );
+
+      case 'todo':
+        return (
+          <div className="text-gray-500 text-sm">
+            No configuration needed for Todo widget
+          </div>
+        );
+
+      default:
+        return null;
+    }
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
-      <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-        <div className="mt-3 text-center">
-          <h3 className="text-lg leading-6 font-medium text-gray-900">Add Widget</h3>
-          <form onSubmit={handleSubmit}>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Widget Type
-              </label>
-              <select
-                value={widgetType}
-                onChange={(e) => setWidgetType(e.target.value)}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              >
-                <option value="reddit">Reddit</option>
-              </select>
-            </div>
+    <div className="bg-white rounded-lg p-6 max-w-md w-full">
+      <h3 className="text-lg font-medium text-gray-900 mb-4">
+        Add New Widget
+      </h3>
 
-            {widgetType === 'reddit' && (
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Subreddit
-                </label>
-                <input
-                  type="text"
-                  value={subreddit}
-                  onChange={(e) => setSubreddit(e.target.value)}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  placeholder="Enter subreddit name"
-                />
-              </div>
-            )}
-
-            <div className="flex items-center justify-between mt-4">
-              <button
-                type="button"
-                onClick={onCancel}
-                className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              >
-                Add Widget
-              </button>
-            </div>
-          </form>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Widget Type
+          </label>
+          <select
+            value={type}
+            onChange={handleTypeChange}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          >
+            <option value="">Select a widget type</option>
+            <option value="reddit">Reddit Feed</option>
+            <option value="weather">Weather</option>
+            <option value="rss">RSS Feed</option>
+            <option value="calendar">Calendar</option>
+            <option value="clock">Clock</option>
+            <option value="todo">Todo List</option>
+          </select>
         </div>
-      </div>
+
+        {type && renderConfigFields()}
+
+        <div className="flex justify-end space-x-3">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={!type}
+            className="px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+          >
+            Add Widget
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

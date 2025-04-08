@@ -42,10 +42,11 @@ class ContainerService {
     try {
       // Ensure the absolute path is used
       const absoluteConfigPath = path.resolve(configPath);
-      console.log(`Using absolute config path: ${absoluteConfigPath}`);
+      const configDir = path.dirname(absoluteConfigPath);
+      console.log(`Using config directory: ${configDir}`);
       
-      // Create container without exposing a port first
-      const command = `docker run -d --name ${containerName} -v "${absoluteConfigPath}:/app/config/glance.yml" ${process.env.GLANCE_IMAGE || 'glanceapp/glance'}`;
+      // Create container with directory mount
+      const command = `docker run -d --name ${containerName} -v "${configDir}:/app/config" ${process.env.GLANCE_IMAGE || 'glanceapp/glance'}`;
       
       console.log(`Running docker command: ${command}`);
       const { stdout } = await execPromise(command);
@@ -78,19 +79,20 @@ class ContainerService {
     try {
       // Ensure the absolute path is used
       const absoluteConfigPath = path.resolve(configPath);
+      const configDir = path.dirname(absoluteConfigPath);
       
-      // Copy new config to container
-      console.log(`Copying config to container: ${containerName}`);
-      await execPromise(`docker cp "${absoluteConfigPath}" ${containerName}:/app/config/glance.yml`);
+      // Stop the container first
+      console.log(`Stopping container: ${containerName}`);
+      await execPromise(`docker stop ${containerName}`);
       
-      // Restart container to apply changes
-      console.log(`Restarting container: ${containerName}`);
-      await execPromise(`docker restart ${containerName}`);
+      // Remove the container
+      console.log(`Removing container: ${containerName}`);
+      await execPromise(`docker rm ${containerName}`);
       
-      return { 
-        containerName,
-        port: 'internal' // Not exposing external port for now
-      };
+      // Create a new container with the updated config
+      console.log(`Creating new container with updated config: ${containerName}`);
+      return await this.createContainer(containerName, configPath);
+      
     } catch (error) {
       console.error(`Container update error: ${error.message}`);
       throw error;

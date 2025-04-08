@@ -1,0 +1,19 @@
+server:
+  port: 8080
+theme:
+  light: true
+  background_color: 210 15 97
+  primary_color: 210 80 50
+branding:
+  logo_text: Second Test Dashboard
+pages:
+  - name: Home
+    columns:
+      - size: full
+        widgets:
+          - type: reddit
+            title: Programming
+            subreddit: programming
+            show_thumbnails: true
+            style: vertical-list
+            collapse_after: 5

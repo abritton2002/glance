@@ -4,6 +4,7 @@ const API_URL = 'http://localhost:5000/api';
 let token = '';
 let userId = '';
 let dashboardId = '';
+let secondDashboardId = '';
 
 async function runTests() {
   try {
@@ -58,8 +59,8 @@ async function runTests() {
     
     console.log('✅ Profile Retrieved:', profileRes.data.email);
     
-    // Create a dashboard
-    console.log('\n3. Create Dashboard Test:');
+    // Create first dashboard (will be default)
+    console.log('\n3. Create First Dashboard Test:');
     const dashboardRes = await axios.post(
       `${API_URL}/dashboards`,
       {
@@ -93,11 +94,49 @@ async function runTests() {
       }
     );
     
-    console.log('✅ Dashboard Created:', dashboardRes.data.name);
+    console.log('✅ First Dashboard Created:', dashboardRes.data.name);
     dashboardId = dashboardRes.data.id;
     
+    // Create second dashboard (non-default)
+    console.log('\n4. Create Second Dashboard Test:');
+    const secondDashboardRes = await axios.post(
+      `${API_URL}/dashboards`,
+      {
+        name: 'Second Test Dashboard',
+        layout: {
+          pages: [
+            {
+              name: 'Home',
+              columns: [
+                {
+                  size: 'full',
+                  widgets: [
+                    {
+                      type: 'reddit',
+                      title: 'Programming',
+                      config: {
+                        subreddits: 'programming',
+                        showThumbnails: true,
+                        style: 'vertical-list'
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        headers: { 'Authorization': `Bearer ${token}` }
+      }
+    );
+    
+    console.log('✅ Second Dashboard Created:', secondDashboardRes.data.name);
+    secondDashboardId = secondDashboardRes.data.id;
+    
     // Get all dashboards
-    console.log('\n4. Get Dashboards Test:');
+    console.log('\n5. Get Dashboards Test:');
     const getDashRes = await axios.get(
       `${API_URL}/dashboards`,
       {
@@ -107,8 +146,8 @@ async function runTests() {
     
     console.log(`✅ Retrieved ${getDashRes.data.length} dashboards`);
     
-    // Update dashboard
-    console.log('\n5. Update Dashboard Test:');
+    // Update first dashboard
+    console.log('\n6. Update First Dashboard Test:');
     const updateDashRes = await axios.put(
       `${API_URL}/dashboards/${dashboardId}`,
       {
@@ -142,10 +181,10 @@ async function runTests() {
       }
     );
     
-    console.log('✅ Dashboard Updated:', updateDashRes.data.name);
+    console.log('✅ First Dashboard Updated:', updateDashRes.data.name);
     
     // Get specific dashboard
-    console.log('\n6. Get Specific Dashboard Test:');
+    console.log('\n7. Get Specific Dashboard Test:');
     const getSpecificDashRes = await axios.get(
       `${API_URL}/dashboards/${dashboardId}`,
       {
@@ -155,16 +194,16 @@ async function runTests() {
     
     console.log('✅ Retrieved Dashboard:', getSpecificDashRes.data.name);
     
-    // Delete dashboard
-    console.log('\n7. Delete Dashboard Test:');
+    // Delete second dashboard (non-default)
+    console.log('\n8. Delete Second Dashboard Test:');
     const deleteDashRes = await axios.delete(
-      `${API_URL}/dashboards/${dashboardId}`,
+      `${API_URL}/dashboards/${secondDashboardId}`,
       {
         headers: { 'Authorization': `Bearer ${token}` }
       }
     );
     
-    console.log('✅ Dashboard Deleted:', deleteDashRes.data.message);
+    console.log('✅ Second Dashboard Deleted:', deleteDashRes.data.message);
     
     console.log('\n🎉 All tests completed successfully!');
     

@@ -13,7 +13,9 @@ app.use(express.json());
 // Routes
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/dashboards', require('./routes/dashboardRoutes'));
-// app.use('/api/widgets', require('./routes/widgetRoutes')); // Uncomment when implemented
+app.use('/api/rss', require('./routes/rssRoutes'));
+app.use('/api/weather', require('./routes/weatherRoutes'));
+app.use('/api/calendar', require('./routes/calendarRoutes'));
 
 // Basic route for testing
 app.get('/', (req, res) => {
@@ -26,7 +28,7 @@ app.use((err, req, res, next) => {
   res.status(500).send({ message: 'Server error', error: err.message });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

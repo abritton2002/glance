@@ -14,6 +14,7 @@ const Dashboard = () => {
   const [showConfig, setShowConfig] = useState(false);
   const { user } = useAuth();
   const [dashboardId, setDashboardId] = useState(null);
+  const token = user ? user.token : null;
 
   useEffect(() => {
     // First, get or create default dashboard
@@ -30,7 +31,11 @@ const Dashboard = () => {
     // Then load widgets for that dashboard
     const loadWidgets = async (id) => {
       try {
-        const response = await axios.get(`/api/widgets/${id}/widgets`);
+        const response = await axios.get(`/api/widgets/${id}/widgets`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
         setWidgets(response.data);
       } catch (err) {
         console.error('Failed to load widgets:', err);
@@ -42,12 +47,16 @@ const Dashboard = () => {
         if (id) loadWidgets(id);
       });
     }
-  }, [user]);
+  }, [user, token]);
 
   const addWidget = async (config) => {
     if (!dashboardId) return;
     try {
-      const response = await axios.post(`/api/widgets/${dashboardId}/widgets`, config);
+      const response = await axios.post(`/api/widgets/${dashboardId}/widgets`, config, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       setWidgets([...widgets, response.data]);
       setShowConfig(false);
     } catch (err) {
@@ -58,7 +67,11 @@ const Dashboard = () => {
   const removeWidget = async (id) => {
     if (!dashboardId) return;
     try {
-      await axios.delete(`/api/widgets/${dashboardId}/widgets/${id}`);
+      await axios.delete(`/api/widgets/${dashboardId}/widgets/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       setWidgets(widgets.filter(widget => widget.id !== id));
     } catch (err) {
       console.error('Failed to remove widget:', err);

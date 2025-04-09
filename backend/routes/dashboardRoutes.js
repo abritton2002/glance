@@ -3,6 +3,7 @@ const supabase = require('../services/supabase');
 const auth = require('../middleware/auth');
 const configTranslator = require('../services/configTranslator');
 const containerService = require('../services/containerService');
+const cors = require('cors');
 const router = express.Router();
 
 // Get default dashboard (create if doesn't exist)

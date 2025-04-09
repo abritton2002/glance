@@ -1,15 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const supabase = require('../services/supabase');
+const auth = require('../middleware/auth');
 
 // Get all widgets for a dashboard
-router.get('/:dashboardId/widgets', async (req, res) => {
+router.get('/:dashboardId/widgets', auth, async (req, res) => {
   try {
     const { dashboardId } = req.params;
     const { data, error } = await supabase
       .from('widgets')
       .select('*')
-      .eq('dashboard_id', dashboardId);
+      .eq('dashboard_id', dashboardId)
+      .eq('user_id', req.user.id);
 
     if (error) throw error;
     res.json(data);
@@ -20,7 +22,7 @@ router.get('/:dashboardId/widgets', async (req, res) => {
 });
 
 // Add a new widget to a dashboard
-router.post('/:dashboardId/widgets', async (req, res) => {
+router.post('/:dashboardId/widgets', auth, async (req, res) => {
   try {
     const { dashboardId } = req.params;
     const { type, config } = req.body;
@@ -30,6 +32,7 @@ router.post('/:dashboardId/widgets', async (req, res) => {
       .insert([
         {
           dashboard_id: dashboardId,
+          user_id: req.user.id,
           type,
           config
         }
@@ -45,7 +48,7 @@ router.post('/:dashboardId/widgets', async (req, res) => {
 });
 
 // Update a widget
-router.put('/:dashboardId/widgets/:widgetId', async (req, res) => {
+router.put('/:dashboardId/widgets/:widgetId', auth, async (req, res) => {
   try {
     const { dashboardId, widgetId } = req.params;
     const { type, config } = req.body;
@@ -55,6 +58,7 @@ router.put('/:dashboardId/widgets/:widgetId', async (req, res) => {
       .update({ type, config })
       .eq('id', widgetId)
       .eq('dashboard_id', dashboardId)
+      .eq('user_id', req.user.id)
       .select();
 
     if (error) throw error;
@@ -66,7 +70,7 @@ router.put('/:dashboardId/widgets/:widgetId', async (req, res) => {
 });
 
 // Delete a widget
-router.delete('/:dashboardId/widgets/:widgetId', async (req, res) => {
+router.delete('/:dashboardId/widgets/:widgetId', auth, async (req, res) => {
   try {
     const { dashboardId, widgetId } = req.params;
 
@@ -74,7 +78,8 @@ router.delete('/:dashboardId/widgets/:widgetId', async (req, res) => {
       .from('widgets')
       .delete()
       .eq('id', widgetId)
-      .eq('dashboard_id', dashboardId);
+      .eq('dashboard_id', dashboardId)
+      .eq('user_id', req.user.id);
 
     if (error) throw error;
     res.json({ message: 'Widget deleted successfully' });

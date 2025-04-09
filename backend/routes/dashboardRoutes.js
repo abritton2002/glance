@@ -7,12 +7,13 @@ const cors = require('cors');
 const router = express.Router();
 
 // Get default dashboard (create if doesn't exist)
-router.get('/default', async (req, res) => {
+router.get('/default', auth, async (req, res) => {
   try {
-    // First try to find an existing default dashboard
+    // First try to find an existing default dashboard for this user
     let { data: dashboards, error } = await supabase
       .from('dashboards')
       .select('*')
+      .eq('user_id', req.user.id)
       .eq('is_default', true)
       .limit(1);
 
@@ -25,6 +26,7 @@ router.get('/default', async (req, res) => {
         .insert([
           {
             name: 'Default Dashboard',
+            user_id: req.user.id,
             is_default: true,
             layout: {
               pages: [

@@ -7,15 +7,26 @@ const WidgetConfig = ({ onSave, onCancel }) => {
   const handleTypeChange = (e) => {
     const newType = e.target.value;
     setType(newType);
-    // Reset config when type changes
-    setConfig({});
+    // Initialize config with default values based on widget type
+    switch (newType) {
+      case 'reddit':
+        setConfig({
+          subreddit: 'programming',
+          title: 'Reddit Feed',
+          showThumbnails: true,
+          collapseAfter: 5
+        });
+        break;
+      default:
+        setConfig({});
+    }
   };
 
   const handleConfigChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
     setConfig(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? e.target.checked : value
     }));
   };
 
@@ -31,6 +42,19 @@ const WidgetConfig = ({ onSave, onCancel }) => {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">
+                Title
+              </label>
+              <input
+                type="text"
+                name="title"
+                value={config.title || ''}
+                onChange={handleConfigChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                placeholder="Widget Title"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
                 Subreddit
               </label>
               <input
@@ -38,8 +62,34 @@ const WidgetConfig = ({ onSave, onCancel }) => {
                 name="subreddit"
                 value={config.subreddit || ''}
                 onChange={handleConfigChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                placeholder="e.g., news"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                placeholder="e.g., programming"
+              />
+            </div>
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                name="showThumbnails"
+                checked={config.showThumbnails || false}
+                onChange={handleConfigChange}
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              />
+              <label className="ml-2 block text-sm text-gray-700">
+                Show Thumbnails
+              </label>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Number of Posts to Show
+              </label>
+              <input
+                type="number"
+                name="collapseAfter"
+                value={config.collapseAfter || 5}
+                onChange={handleConfigChange}
+                min="1"
+                max="25"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               />
             </div>
           </div>
@@ -177,50 +227,46 @@ const WidgetConfig = ({ onSave, onCancel }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg p-6 max-w-md w-full">
-      <h3 className="text-lg font-medium text-gray-900 mb-4">
-        Add New Widget
-      </h3>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Widget Type
-          </label>
-          <select
-            value={type}
-            onChange={handleTypeChange}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          >
-            <option value="">Select a widget type</option>
-            <option value="reddit">Reddit Feed</option>
-            <option value="weather">Weather</option>
-            <option value="rss">RSS Feed</option>
-            <option value="calendar">Calendar</option>
-            <option value="clock">Clock</option>
-            <option value="todo">Todo List</option>
-          </select>
-        </div>
-
-        {type && renderConfigFields()}
-
-        <div className="flex justify-end space-x-3">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={!type}
-            className="px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
-          >
-            Add Widget
-          </button>
-        </div>
-      </form>
+    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
+      <div className="bg-white rounded-lg p-6 max-w-md w-full">
+        <h2 className="text-lg font-medium text-gray-900 mb-4">Add Widget</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Widget Type
+            </label>
+            <select
+              value={type}
+              onChange={handleTypeChange}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            >
+              <option value="">Select a widget type</option>
+              <option value="reddit">Reddit Feed</option>
+              <option value="weather">Weather</option>
+              <option value="rss">RSS Feed</option>
+              <option value="calendar">Calendar</option>
+              <option value="clock">Clock</option>
+              <option value="todo">Todo List</option>
+            </select>
+          </div>
+          {type && renderConfigFields()}
+          <div className="mt-6 flex justify-end space-x-3">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md"
+            >
+              Add Widget
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

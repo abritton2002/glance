@@ -2,9 +2,18 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
 // Initialize Supabase client
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL; // Use REACT_APP_ prefix
-const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY; // Use REACT_APP_ prefix
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
+const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('Missing Supabase environment variables:', {
+    url: supabaseUrl,
+    key: supabaseAnonKey
+  });
+  throw new Error('Missing Supabase environment variables');
+}
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const AuthContext = createContext({});
 
@@ -16,23 +25,24 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // Check for an existing session
-    const session = supabase.auth.session();
-    setUser(session?.user ?? null);
-    setLoading(false);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
 
     // Listen for changes to the auth state
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
 
     // Cleanup subscription on unmount
     return () => {
-      authListener.unsubscribe();
+      subscription.unsubscribe();
     };
   }, []);
 
   const login = async (email, password) => {
-    const { user, error } = await supabase.auth.signIn({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
       console.error('Login error:', error);
       return false;
@@ -41,7 +51,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = async (email, password) => {
-    const { user, error } = await supabase.auth.signUp({ email, password });
+    const { error } = await supabase.auth.signUp({ email, password });
     if (error) {
       console.error('Registration error:', error);
       return false;

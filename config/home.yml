@@ -56,7 +56,7 @@
     - size: full
       widgets:
         - type: group
-          title: AI & Technology
+          title: Reddit Feeds
           widgets:
             - type: reddit
               title: Artificial Intelligence
@@ -68,36 +68,11 @@
               subreddit: investing
               show-thumbnails: true
               collapse-after: 6
-            - type: rss
-              title: Tech News
-              style: vertical-list
-              limit: 8
-              collapse-after: 4
-              cache: 3h
-              feeds:
-                - url: https://www.theverge.com/rss/index.xml
-                  title: The Verge
-                - url: https://blog.google/technology/ai/rss/
-                  title: Google AI Blog
-            - type: rss
-              title: Sports News
-              style: vertical-list
-              limit: 10
-              collapse-after: 6
-              cache: 1h
-              feeds:
-                - url: https://steelersdepot.com/feed/
-                  title: Steelers Depot
-                - url: https://www.mlb.com/pirates/feeds/news/rss.xml
-                  title: Pittsburgh Pirates
-                - url: https://www.dukebasketballreport.com/rss/current.xml
-                  title: Duke Basketball
             - type: reddit
               title: Bible
               subreddit: Bible
               show-thumbnails: true
               collapse-after: 6
-
 
         - type: videos
           title: Video Content

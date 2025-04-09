@@ -72,19 +72,14 @@ const configTranslator = {
   
   // Widget transformer implementations
   _transformRedditWidget(widget) {
-    // If user entered comma-separated subreddits, use just the first one
-    let subreddit = widget.config.subreddits;
-    if (subreddit.includes(',')) {
-      subreddit = subreddit.split(',')[0].trim();
-    }
-    
     return {
       type: 'reddit',
-      title: widget.title || subreddit,
-      subreddit: subreddit,
-      show_thumbnails: widget.config.showThumbnails || false,
-      style: widget.config.style || 'vertical-list',
-      collapse_after: widget.config.collapseAfter || 5,
+      title: widget.title || 'Reddit Feed',
+      subreddit: widget.config.subreddit || 'all',
+      showThumbnails: widget.config.showThumbnails ?? true,
+      collapseAfter: widget.config.collapseAfter || 5,
+      style: widget.config.style || 'card',
+      refreshInterval: widget.config.refreshInterval || 300000,
     };
   },
   
